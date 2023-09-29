@@ -1,0 +1,10 @@
+respo : Elena
+début du travail : 17/09
+
+principe simple de bruteforce du sudoku. Tous les états sont essayés.
+
+final/ : version finale du programme
+
+hex/ : version hexadecimale du programme
+
+boards/ : grilles de sudoku a utiliser pour les tests
