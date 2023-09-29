@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 void free_layer (Layer layer)
 {
@@ -17,8 +18,13 @@ void free_layer (Layer layer)
 }
 
 
-void sigmoid(double* input)
+void sigmoid(double* input, size_t len)
 {
+    for(size_t i = 0; i < len; i++)
+    {
+        input[i] = 1 / (1 + exp(-input[i]));
+        //input[i] = (input[i] > 0.5);
+    }
     return;
 }
 
@@ -34,6 +40,7 @@ void compute_output(Layer layer, double* input, double* output)
         {
             output[i] = input[i];
         }
+        sigmoid(output, w);
     }
     else
     {
@@ -46,6 +53,6 @@ void compute_output(Layer layer, double* input, double* output)
             }
             output[i] += layer.biases[i];
         }
-        sigmoid(output);
+        sigmoid(output, w);
     }
 }

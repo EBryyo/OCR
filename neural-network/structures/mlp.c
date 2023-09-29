@@ -61,9 +61,12 @@ void free_mlp(mlp* network)
     free(network);
 }
 
-unsigned char compute(mlp* network, double* input, size_t len)
+double** compute(mlp* network, double* input, size_t len)
 {
+    double **res;
     double *i, *o;
+
+    res = calloc(network->count - 1, sizeof(double*));
 
     if (len != network->layers[0].w)
     {
@@ -78,18 +81,22 @@ unsigned char compute(mlp* network, double* input, size_t len)
     {
         compute_output(network->layers[k], i, o);
         free(i);
+        res[k-1] = o;
         i = o;
         o = calloc(network->layers[k].w, sizeof(double));
     }
 
-
+    /*
     unsigned char res = 0;
     for(unsigned char c = 1; c < network->layers[network->count - 1].w; c++)
     {
-        if (i[res] < i[c])
+        if (i[res] > i[c])
             res = c;
     }
     
+    return res;
+
+    */
     return res;
 }
 
