@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 unsigned char maxindex(double* array, size_t len)
 {
@@ -53,19 +53,43 @@ void free_mlp(mlp* network)
     //free_layer(network->input_layer);
     //free_layer(network->hidden_layer);
     //free_layer(network->output_layer);
+    for(size_t i = 0; i < network->count; i++)
+    {
+        free_layer(network->layers[i]);
+    }
+    free(network->layers);
     free(network);
 }
 
 unsigned char compute(mlp* network, double* input, size_t len)
 {
-    unsigned char res = 0;
-    /*for(unsigned char i = 1; i < network->output_layer.w; i++)
+    double *i, *o;
+
+    if (len != network->layers[0].w)
     {
-        if (layer3[res] < layer3[i])
-            res = i;
+        printf("input size is inappropriate!\n");
+        return 0;
     }
-    free(layer3);
-    */
+    
+    i = calloc(len, sizeof(double));
+    memcpy(i, input, len * sizeof(double));
+    o = calloc(len, sizeof(double));
+    for(size_t k = 1; k < network->count; k++)
+    {
+        compute_output(network->layers[k], i, o);
+        free(i);
+        i = o;
+        o = calloc(network->layers[k].w, sizeof(double));
+    }
+
+
+    unsigned char res = 0;
+    for(unsigned char c = 1; c < network->layers[network->count - 1].w; c++)
+    {
+        if (i[res] < i[c])
+            res = c;
+    }
+    
     return res;
 }
 
@@ -76,6 +100,12 @@ mlp* import_mlp(char* source)
     size_t i, w, h;
     FILE* file = fopen(source,"rb");
     
+    if (file == NULL)
+    {
+        printf("binary file must exist.");
+        return n;
+    }
+
     //allocate memory for n
     n = calloc(1, sizeof(mlp));
 

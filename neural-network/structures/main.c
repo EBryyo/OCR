@@ -6,12 +6,16 @@
 
 void main(void)
 {
-    mlp* n;
-    //size_t layers[5] = {10, 5, 3, 2, 5};
-    //n = init(5, layers);
-    //export_mlp(n, "network");
-    n = import_mlp("network");
-    print_mlp(n);
+    mlp *n, *m;
+    size_t layers[3] = {28*28, 100, 10};
+    n = init(3, layers);
+    export_mlp(n, "network");
+    printf("1\n");
+    free_mlp(n);
+    printf("1\n");
+    m = import_mlp("network");
+    print_mlp(m);
+    free_mlp(m);
     /*
     size_t i;
     mlp* neural_net = calloc(1, sizeof(mlp));

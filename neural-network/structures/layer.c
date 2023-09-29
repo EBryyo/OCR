@@ -5,7 +5,7 @@
 
 void free_layer (Layer layer)
 {
-    if (layer.passive)
+    if (!layer.passive)
     {
         for(size_t i = 0; i < layer.w; i++)
         {
