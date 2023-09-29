@@ -17,49 +17,30 @@ unsigned char maxindex(double* array, size_t len)
     return res;
 }
 
-mlp* init(size_t inputlen, size_t hiddenlen, size_t outputlen)
+mlp* init(size_t count, size_t* layers)
 {
     mlp* n;
     n = calloc(1,sizeof(mlp));
-    n->input_layer.w = inputlen;
-    n->input_layer.h = 1;
-    n->hidden_layer.w = hiddenlen;
-    n->hidden_layer.h = inputlen;
-    n->output_layer.w = outputlen;
-    n->output_layer.h = hiddenlen;
-
-    size_t i;
-
-    n->input_layer.weights = calloc(inputlen,sizeof(double*));
-    n->input_layer.biases = calloc(inputlen,sizeof(double));
-    for(i = 0; i < inputlen; i++)
+    n->count = count;
+    n->layers = calloc(count, sizeof(Layer));
+    
+    n->layers[0].w = layers[0];
+    n->layers[0].h = 1;
+    n->layers[0].passive = 1;
+    for(size_t i = 1; i < count; i++)
     {
-        n->input_layer.biases[i] = 0;
-        n->input_layer.weights[i] = calloc(1,sizeof(double));
-        n->input_layer.weights[i][0] = 1;
-    }
-
-    n->hidden_layer.weights = calloc(hiddenlen,sizeof(double*));
-    n->hidden_layer.biases = calloc(hiddenlen,sizeof(double));
-    for(i = 0; i < hiddenlen; i++)
-    {
-        n->hidden_layer.biases[i] = 0;
-        n->hidden_layer.weights[i] = calloc(inputlen,sizeof(double));
-        for(size_t j = 0; j < inputlen; j++)
+        n->layers[i].passive = 1;
+        n->layers[i].w = layers[i];
+        n->layers[i].h = n->layers[i-1].w;
+        n->layers[i].weights = calloc(layers[i], sizeof(double*));
+        n->layers[i].biases = calloc(layers[i], sizeof(double));
+        for(size_t j = 0; j < n->layers[i].w; j++)
         {
-            n->hidden_layer.weights[i][j] = 1;
-        }
-    }
-
-    n->output_layer.weights = calloc(outputlen,sizeof(double*));
-    n->output_layer.biases = calloc(outputlen,sizeof(double));
-    for(i = 0; i < outputlen; i++)
-    {
-        n->output_layer.biases[i] = 0;
-        n->output_layer.weights[i] = calloc(hiddenlen,sizeof(double));
-        for(size_t j = 0; j < hiddenlen; j++)
-        {
-            n->output_layer.weights[i][j] = 1;
+            n->layers[i].weights[j] = calloc(layers[i-1], sizeof(double));
+            for (size_t k = 0; k < n->layers[i].h; k++)
+            {
+                n->layers[i].weights[j][k] = 1;
+            }
         }
     }
 
@@ -68,94 +49,62 @@ mlp* init(size_t inputlen, size_t hiddenlen, size_t outputlen)
 
 void free_mlp(mlp* network)
 {
-    free_layer(network->input_layer);
-    free_layer(network->hidden_layer);
-    free_layer(network->output_layer);
+
+    //free_layer(network->input_layer);
+    //free_layer(network->hidden_layer);
+    //free_layer(network->output_layer);
     free(network);
 }
 
 unsigned char compute(mlp* network, double* input, size_t len)
 {
-    double *layer1, *layer2, *layer3;
-    
-    layer1 = calloc(network->input_layer.w, sizeof(double));
-    compute_output(network->input_layer, input, layer1);
-    
-    layer2 = calloc(network->hidden_layer.w, sizeof(double));
-    compute_output(network->hidden_layer, layer1, layer2);
-    free(layer1);
-    
-    layer3 = calloc(network->output_layer.w,sizeof(double));
-    compute_output(network->output_layer, layer2, layer3);
-    free(layer2);
-    
     unsigned char res = 0;
-    for(unsigned char i = 1; i < network->output_layer.w; i++)
+    /*for(unsigned char i = 1; i < network->output_layer.w; i++)
     {
         if (layer3[res] < layer3[i])
             res = i;
     }
     free(layer3);
-
+    */
     return res;
 }
 
 mlp* import_mlp(char* source)
 {
     mlp* n;
+    Layer* l;
+    size_t i, w, h;
     FILE* file = fopen(source,"rb");
+    
+    //allocate memory for n
+    n = calloc(1, sizeof(mlp));
 
+    //read layer count from file
+    fread(&n->count, sizeof(size_t), 1, file);
 
-    //allocate memory for the mlp
-    n = calloc(1,sizeof(mlp));
+    //allocate memory for layer count
+    n->layers = calloc(n->count, sizeof(Layer));
 
-    //read layer lengths from source into corresponding res fields
-    fread(&n->input_layer.w, sizeof(size_t), 1, file);
-    fread(&n->hidden_layer.w, sizeof(size_t), 1, file);
-    fread(&n->output_layer.w, sizeof(size_t), 1, file);
-    n->input_layer.h = 1;
-    n->hidden_layer.h = n->input_layer.w;
-    n->output_layer.h = n->hidden_layer.w;
+    //configure input layer
+    fread(&n->layers[0].w, sizeof(size_t), 1, file);
+    n->layers[0].h = 1;
+    n->layers[0].passive = 1;
 
-    size_t x, y, i;
-
-    //initialize and complete input_layer
-
-    x = n->input_layer.w;
-    y = n->input_layer.h;
-    n->input_layer.biases = calloc(x, sizeof(double));
-    n->input_layer.weights = calloc(x, sizeof(double*));
-    for(i = 0; i < x; i++)
+    //configure other layers
+    for(i = 1; i < n->count; i++)
     {
-        fread(&n->input_layer.biases[i],sizeof(double),1,file);
-        n->input_layer.weights[i] = calloc(y, sizeof(double));
-        fread(n->input_layer.weights[i], sizeof(double), y, file);
-    }
-
-    //initalize and complete hidden_layer
-
-    x = n->hidden_layer.w;
-    y = n->hidden_layer.h;
-    n->hidden_layer.biases = calloc(x, sizeof(double));
-    n->hidden_layer.weights = calloc(x,sizeof(double*));
-    for(i = 0; i < x; i++)
-    {
-        fread(&n->hidden_layer.biases[i],sizeof(double),1,file);
-        n->hidden_layer.weights[i] = calloc(y,sizeof(double));
-        fread(n->hidden_layer.weights[i], sizeof(double), y, file);
-    }
-
-    //initialize and complete output_layer
-
-    x = n->output_layer.w;
-    y = n->output_layer.h;
-    n->output_layer.biases = calloc(x, sizeof(double));
-    n->output_layer.weights = calloc(x,sizeof(double*));
-    for(i = 0; i < x; i++)
-    {
-        fread(&n->output_layer.biases[i],sizeof(double), 1, file);
-        n->output_layer.weights[i] = calloc(y,sizeof(double));
-        fread(n->output_layer.weights[i], sizeof(double), y, file);
+        l = &n->layers[i];
+        fread(&l->w, sizeof(size_t), 1, file);
+        l->h = n->layers[i-1].w;
+        l->passive = 0;
+        l->biases = calloc(l->w, sizeof(double));
+        l->weights = calloc(l->w, sizeof(double*));
+        fread(l->biases, sizeof(double), l->w, file);
+        for(w = 0; w < l->w; w++)
+        {
+            l->weights[w] = calloc(l->h, sizeof(double));
+            fread(l->weights[w], sizeof(double), l->h, file);
+        }
     }
 
     fclose(file);
@@ -166,74 +115,56 @@ void export_mlp(mlp* n, char* destination)
 {
     FILE* file;
     file = fopen(destination, "wb");
+    size_t i, w, h;
 
-    //write layer lengths
-    fwrite(&n->input_layer.w, sizeof(size_t), 1, file);
-    fwrite(&n->hidden_layer.w, sizeof(size_t), 1, file);
-    fwrite(&n->output_layer.w, sizeof(size_t), 1, file);
+    //write layer count into file
+    fwrite(&n->count, sizeof(size_t), 1, file);
 
-    size_t m, i;
-
-    //write weights for each layer
-    m = n->input_layer.w;
-    for(i = 0; i < m; i++)
-    {
-        fwrite(&n->input_layer.biases[i], sizeof(double), 1, file);
-        fwrite(n->input_layer.weights[i], sizeof(double), n->input_layer.h, file);
-    }
-    m = n->hidden_layer.w;
-    for(i = 0; i < m; i++)
-    {
-        fwrite(&n->hidden_layer.biases[i], sizeof(double), 1, file);
-        fwrite(n->hidden_layer.weights[i], sizeof(double), n->hidden_layer.h, file);
-    }
-    m = n->output_layer.w;
-    for(i = 0; i < m; i++)
-    {
-        fwrite(&n->output_layer.biases[i], sizeof(double), 1, file);
-        fwrite(n->output_layer.weights[i], sizeof(double), n->output_layer.h, file);
-    }
+    //write input layer neuron count into file
+    fwrite(&n->layers[0].w, sizeof(size_t), 1, file);
     
+
+    //for each layer, write count, biases and weights
+    //first the neuron count of the layer is written in file
+    //then the entire biases array is written in file
+    //then the weights matrix is written column by column in file
+    for(i = 1; i < n->count; i++)
+    {
+        fwrite(&n->layers[i].w, sizeof(size_t), 1, file);
+        fwrite(n->layers[i].biases, sizeof(double), n->layers[i].w, file);
+        h = n->layers[i].h;
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            fwrite(n->layers[i].weights[w], sizeof(double), h, file);
+        }
+    }
+
     fclose(file);
 }
 
 void print_mlp(mlp* n)
 {
-    printf("\ninput layer:\n");
-    printf("length : %zu\n", n->input_layer.w);
-    for(size_t i = 0; i < n->input_layer.w; i++)
-    {
-        printf("sigmoid %zu: ", i);
-        printf("\n\tbias: %g\n\tweights: ", n->input_layer.biases[i]);
-        printf("%g ", n->input_layer.weights[i][0]);
-        printf("\n");
-    }
+    size_t w,h;
 
-    printf("\nhidden layer:\n");
-    printf("length : %zu\n", n->hidden_layer.w);
+    printf("MULTI-LAYER PERCEPTRON\n");
+    printf("\nLAYER 0\n");
+    printf("\nCOUNT : %zu\n\n", n->layers[0].w);
+    
 
-    for(size_t i = 0; i < n->hidden_layer.w; i++)
+    for(size_t i = 1; i < n->count; i++)
     {
-        printf("sigmoid %zu: ", i);
-        printf("\n\tbias: %g\n\tweights: ", n->hidden_layer.biases[i]);
-        for(size_t j = 0; j < n->input_layer.w; j++)
+        printf("LAYER %zu\n\n", i);
+        printf("COUNT : %zu\n\n", n->layers[i].w); 
+        for(w = 0; w < n->layers[i].w; w++)
         {
-            printf("%g ", n->hidden_layer.weights[i][j]);
-        }
-        printf("\n");
-    }
-
-
-    printf("\noutput layer:\n");
-    printf("length : %zu\n", n->output_layer.w);
-
-    for(size_t i = 0; i < n->output_layer.w; i++)
-    {
-        printf("sigmoid %zu: ", i);
-        printf("\n\tbias: %g\n\tweights: ", n->output_layer.biases[i]);
-        for(size_t j = 0; j < n->hidden_layer.w; j++)
-        {
-            printf("%g ", n->output_layer.weights[i][j]);
+            printf("sigmoid %zu :\n", w);
+            printf("\tbias : %2g\n", n->layers[i].biases[w]);
+            printf("\tweights : ");
+            for(h = 0; h < n->layers[i].h; h++)
+            {
+                printf("%2g ", n->layers[i].weights[w][h]);
+            }
+            printf("\n");
         }
         printf("\n");
     }

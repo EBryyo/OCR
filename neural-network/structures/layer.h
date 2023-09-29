@@ -9,6 +9,7 @@ typedef struct Layer
     size_t h; //height of matrix, number of inputs/weights
     double** weights;
     double* biases;
+    unsigned char passive; //indicates if layer is an input layer
 }Layer;
 
 void free_layer(Layer layer);
@@ -18,4 +19,5 @@ void compute_output(Layer layer, double* input, double* output);
 //computes the outputs of the layer for given inputs into output
 // /!\ allocate memory for output with calloc(layer.w, sizeof(double))
 
+ 
 #endif

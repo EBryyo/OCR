@@ -6,14 +6,13 @@
 
 typedef struct
 {
-    Layer input_layer;
-
-    Layer hidden_layer;
-
-    Layer output_layer;
+    Layer* layers; //array of layers, including input and output layers
+    size_t count; //number of layers, including input and output layers
 } mlp;
-mlp* init(size_t inputlen, size_t hiddenlen, size_t outputlen);
-//initializes a network with appropriate sigmoid counts each layer
+
+
+mlp* init(size_t count, size_t* layers);
+//initializes a network with appropriate sigmoid counts on each layer
 
 void free_mlp(mlp* network);
 //frees memory allocated to network and its fields

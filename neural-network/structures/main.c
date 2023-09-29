@@ -7,12 +7,11 @@
 void main(void)
 {
     mlp* n;
-    n = init(784, 100, 10);
-    export_mlp(n, "network");
-    free_mlp(n);
-    mlp* m = import_mlp("network");
-    //export_mlp(m,"network2");
-    print_mlp(m);
+    //size_t layers[5] = {10, 5, 3, 2, 5};
+    //n = init(5, layers);
+    //export_mlp(n, "network");
+    n = import_mlp("network");
+    print_mlp(n);
     /*
     size_t i;
     mlp* neural_net = calloc(1, sizeof(mlp));
