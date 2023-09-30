@@ -21,7 +21,6 @@ void free_layer (Layer layer)
 void sigmoid(double* input, size_t len)
 {
     //applies sigmoid function in place to input array 
-
     for(size_t i = 0; i < len; i++)
     {
         input[i] = 1 / (1 + exp(-input[i]));
@@ -42,7 +41,6 @@ void compute_output(Layer layer, double* input, double* output)
     h = layer.h;
 
     //if layer is passive, the output signal is simply the input signal
-
     if (layer.passive)
     {
         for(size_t i = 0; i < w; i++)
@@ -53,7 +51,6 @@ void compute_output(Layer layer, double* input, double* output)
     }
 
     //else, apply linear combination of weights and inputs for each neuron
-
     else
     {
         for(size_t i = 0; i < w; i++)
