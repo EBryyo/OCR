@@ -1,4 +1,11 @@
 respo : Elena
 Debut du travail : 23/09
 
+initialiser un MLP : 
+    - compiler le repo ./structures/ a l'aide de make. 
+    - run l'executable init avec pour arguments le nom du MLP suivi du 
+        nombre de neurones de chaque couche de la couche input jusqu'a la 
+        couche output.
+    - retirer l'executable avec make clean
 
+entrainer un MLP : 

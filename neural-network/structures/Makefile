@@ -1,6 +1,6 @@
-main: main.c mlp.c layer.c
-	gcc -o main main.c mlp.c layer.c
+main: init.c mlp.c layer.c
+	gcc -o init init.c mlp.c layer.c -lm
 
 clean:
-	rm main
+	rm init
 	rm *.o
