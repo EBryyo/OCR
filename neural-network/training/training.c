@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stddef.h>
-#include "mnist.h"
+#include <stdlib.h>
 #include "../structures/mlp.h"
 #include "../structures/layer.h"
 
@@ -36,22 +36,56 @@ void gradient_descent(mlp* n, double* target, double* input)
 {
     //applies the gradient descent algorithm on MLP n
     
-
+    double **layer_outputs, ***nweights;
+    size_t i, w, h;
     //compute outputs for every layer
-    
+    layer_outputs = compute(n, input);   
 
     //allocate memory for new weights
-
-
+    nweights = calloc(n->count - 1, sizeof(double**));
+    for(i = 0; i < n->count - 1; i++)
+    {
+        nweights[i] = calloc(n->layers[i].w, sizeof(double*));
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            nweights[i][w] = calloc(n->layers[i].h, sizeof(double));
+        }
+    }
+    
     //compute new weights
-
+    for(i = 0; i < n->count - 1; i++)
+    {
+        for(w = 0; w < n->layers[i+1].w; w++)
+        {
+            for(h = 0; h < n->layers[i+1].h; h++)
+            {
+                if (i == n->count - 2)
+                {
+                    //gradient descent for output layer
+                }
+                else
+                {
+                    //gradient descent for hidden layer
+                }
+            }
+        }
+    }
 
     //free current weights
-
+    for(i = 1; i < n->count; i++)
+    {
+        for(w = 0; w < n->layers[i].w; i++)
+        {
+            free(n->layers[i].weights[w]);
+        }
+        free(n->layers[i].weights);
+    }
 
     //update MLP with new weights
-
-    return void;
+    for(i = 0; i < n->count - 1; i++)
+    {
+        n->layers[i + 1].weights = nweights[i];
+    }
 }
 
 void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
@@ -60,7 +94,7 @@ void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
     
     if (n->layers[0].w != i_len)
     {
-        printf("input length mismatch");
+        printf("input length mismatch, input is %zu and network input is %zu\n", i_len, n->layers[0].w);
         return;
     }
     if (n->layers[n->count-1].w != t_len)
@@ -80,5 +114,5 @@ void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
     
     //free memory allocations
     
-    free(target);
+    free(target_array);
 }

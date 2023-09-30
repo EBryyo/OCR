@@ -80,7 +80,7 @@ void free_mlp(mlp* network)
     free(network);
 }
 
-double** compute(mlp* network, double* input, size_t len)
+double** compute(mlp* network, double* input)
 {
     double **res;
     double *i, *o;
@@ -88,23 +88,16 @@ double** compute(mlp* network, double* input, size_t len)
     //allocate memory for each active layer's output
     res = calloc(network->count - 1, sizeof(double*));
 
-    //exit clause
-    if (len != network->layers[0].w)
-    {
-        printf("input size is inappropriate!\n");
-        return 0;
-    }
-
     //allocate memory for both i and o 
     //i will be used as the input for each layer iterated on
     //o will be used as the output for each layer iterated on
-    i = calloc(len, sizeof(double));
-    o = calloc(len, sizeof(double));
+    i = calloc(network->layers[0].w, sizeof(double));
+    o = calloc(network->layers[1].w, sizeof(double));
 
     //copy input array into i, basically emulating the compute_output function
     //of a passive layer which makes that function kind of irrelevant but im
     //keeping it anyways ^^
-    memcpy(i, input, len * sizeof(double));
+    memcpy(i, input, network->layers[0].w * sizeof(double));
     
     for(size_t k = 1; k < network->count; k++)
     {

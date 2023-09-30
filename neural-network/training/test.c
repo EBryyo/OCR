@@ -32,7 +32,7 @@ void main(void)
     double ratio;
     for(size_t i = 0; i < 10000; i++)
     {
-        int truc = get_max(compute(n, test_image[i], 784)[n->count - 2]);
+        int truc = get_max(compute(n, test_image[i])[n->count - 2]);
         printf("Expected : %i    Actual : %i\n", test_label[i],truc);
         if (test_label[i] == truc)
         {
