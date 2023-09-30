@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	int tab[16][16];
+	char tab[16][16];
 	//for(size_t x = 0; x < 9; x++)
 	//	for(size_t y = 0; y < 9; y++)
 	//		tab[x][y] = 2;

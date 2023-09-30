@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int check_line (size_t* x, size_t* y, unsigned int tab[][9])
+unsigned char check_line (size_t* x, size_t* y, unsigned char tab[][9])
 { 
 	//checks if line is valid
 	
-	unsigned int cur = tab[*y][*x];
+	unsigned char cur = tab[*y][*x];
 	for(size_t X = 0; X < 9; X++)
 	{
 		if (X != *x && tab[*y][X] == cur)
@@ -15,11 +15,11 @@ unsigned int check_line (size_t* x, size_t* y, unsigned int tab[][9])
 	return 1;
 }
 
-unsigned int check_column (size_t* x, size_t* y, unsigned int tab[][9])
+unsigned char check_column (size_t* x, size_t* y, unsigned char tab[][9])
 {
 	//checks if column is valid
 	
-	unsigned int cur = tab[*y][*x];
+	unsigned char cur = tab[*y][*x];
 	for(size_t Y = 0; Y < 9; Y++)
 	{
 		if (Y != *y && tab[Y][*x] == cur)
@@ -28,11 +28,11 @@ unsigned int check_column (size_t* x, size_t* y, unsigned int tab[][9])
 	return 1;
 }
 
-unsigned int check_box (size_t* x, size_t* y, unsigned int tab[][9])
+unsigned char check_box (size_t* x, size_t* y, unsigned char tab[][9])
 {
 	//checks if box is valid
 	
-	unsigned int cur = tab[*y][*x];
+	unsigned char cur = tab[*y][*x];
 	size_t xbias = (*x / 3) * 3;
 	size_t ybias = (*y / 3) * 3;
 	
@@ -47,7 +47,7 @@ unsigned int check_box (size_t* x, size_t* y, unsigned int tab[][9])
 	return 1;
 }
 
-void next (size_t* x, size_t* y, unsigned int ref[][9])
+void next (size_t* x, size_t* y, unsigned char ref[][9])
 {
 	//moves pos to the next mutable position
 	do {
@@ -56,7 +56,7 @@ void next (size_t* x, size_t* y, unsigned int ref[][9])
 	} while (ref[*y][*x]);
 }
 
-void prev (size_t* x, size_t* y, unsigned int ref[][9])
+void prev (size_t* x, size_t* y, unsigned char ref[][9])
 {
 	//moves pos to the previous mutable position
 	do {
@@ -70,7 +70,7 @@ void prev (size_t* x, size_t* y, unsigned int ref[][9])
 	} while (ref[*y][*x]);
 }
 
-unsigned int possible (size_t* x, size_t* y, unsigned int tab[][9])
+unsigned char possible (size_t* x, size_t* y, unsigned char tab[][9])
 { 
 	//returns 0 if the current state of the board is impossible, else not 0
 	//printf("exec: possible\n");
@@ -78,7 +78,7 @@ unsigned int possible (size_t* x, size_t* y, unsigned int tab[][9])
 		&& check_box(x, y, tab);
 }
 
-void mv_next (size_t* x, size_t* y, unsigned int tab[][9], unsigned int ref[][9])
+void mv_next (size_t* x, size_t* y, unsigned char tab[][9], unsigned char ref[][9])
 { 
 	//moves the program forward in the board
 
@@ -90,7 +90,7 @@ void mv_next (size_t* x, size_t* y, unsigned int tab[][9], unsigned int ref[][9]
 	else tab[*y][*x]++;
 }
 
-void mv_prev (size_t* x, size_t* y, unsigned int tab[][9], unsigned int ref[][9])
+void mv_prev (size_t* x, size_t* y, unsigned char tab[][9], unsigned char ref[][9])
 { 
 	//backtracks to next iterable state
 
@@ -102,10 +102,10 @@ void mv_prev (size_t* x, size_t* y, unsigned int tab[][9], unsigned int ref[][9]
 }
 
 
-void solve (unsigned int tab[][9])
+void solve (unsigned char tab[][9])
 {
 	//solving process
-	unsigned int ref[9][9];
+	unsigned char ref[9][9];
 	//deep copy of tab,
 	//as to know which cells are immutable and which are not.
 	for(size_t x = 0; x < 9; x++)

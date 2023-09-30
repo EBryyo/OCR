@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int check_line (size_t* x, size_t* y, int tab[][16])
+char check_line (size_t* x, size_t* y, char tab[][16])
 {
 	//checks if line is valid
 
-	int cur = tab[*y][*x];
+	char cur = tab[*y][*x];
 	for(size_t X = 0; X < 16; X++)
 	{
 		if (X != *x && tab[*y][X] == cur)
@@ -15,11 +15,11 @@ int check_line (size_t* x, size_t* y, int tab[][16])
 	return 1;
 }
 
-int check_column (size_t* x, size_t* y, int tab[][16])
+char check_column (size_t* x, size_t* y, char tab[][16])
 {
 	//checks if column is valid
 
-	int cur = tab[*y][*x];
+	char cur = tab[*y][*x];
 	for(size_t Y = 0; Y < 16; Y++)
 	{
 		if (Y != *y && tab[Y][*x] == cur)
@@ -28,11 +28,11 @@ int check_column (size_t* x, size_t* y, int tab[][16])
 	return 1;
 }
 
-int check_box (size_t* x, size_t* y, int tab[][16])
+char check_box (size_t* x, size_t* y, char tab[][16])
 {
 	//checks if box is valid
 
-	int cur = tab[*y][*x];
+	char cur = tab[*y][*x];
 	size_t xbias = (*x / 4) * 4;
 	size_t ybias = (*y / 4) * 4;
 	
@@ -47,7 +47,7 @@ int check_box (size_t* x, size_t* y, int tab[][16])
 	return 1;
 }
 
-void next (size_t* x, size_t* y, int ref[][16])
+void next (size_t* x, size_t* y, char ref[][16])
 {
 	//moves pos to the next mutable position
 
@@ -57,7 +57,7 @@ void next (size_t* x, size_t* y, int ref[][16])
 	} while (ref[*y][*x] >= 0);
 }
 
-void prev (size_t* x, size_t* y, int ref[][16])
+void prev (size_t* x, size_t* y, char ref[][16])
 {
 	//moves pos to the previous mutable position
 	do {
@@ -71,14 +71,14 @@ void prev (size_t* x, size_t* y, int ref[][16])
 	} while (ref[*y][*x] >= 0);
 }
 
-int possible (size_t* x, size_t* y, int tab[][16])
+char possible (size_t* x, size_t* y, char tab[][16])
 {
 	//returns 0 if the current state of the board is impossible, else not 0
-	//printf("exec: possible\n");
+	//prcharf("exec: possible\n");
 	return (check_line(x, y, tab) && check_column(x, y, tab)) && check_box(x, y, tab);
 }
 
-void mv_next (size_t* x, size_t* y, int tab[][16], int ref[][16])
+void mv_next (size_t* x, size_t* y, char tab[][16], char ref[][16])
 {
 	//moves the program forward in the board
 	if (possible(x, y, tab))
@@ -89,7 +89,7 @@ void mv_next (size_t* x, size_t* y, int tab[][16], int ref[][16])
 	else tab[*y][*x]++;
 }
 
-void mv_prev (size_t* x, size_t* y, int tab[][16], int ref[][16])
+void mv_prev (size_t* x, size_t* y, char tab[][16], char ref[][16])
 { //done
 	//backtracks to next iterable state
 	do {
@@ -100,10 +100,10 @@ void mv_prev (size_t* x, size_t* y, int tab[][16], int ref[][16])
 }
 
 
-void solve (int tab[][16])
+void solve (char tab[][16])
 {
 	//solving process
-	int ref[16][16]; 
+	char ref[16][16]; 
 	//deep copy of tab,
 	//as to know which cells are immutable and which are not.
 	for(size_t x = 0; x < 16; x++)

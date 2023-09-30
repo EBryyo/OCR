@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stddef.h>
 
-int read_board(char file[], int res[16][16])
+char read_board(char file[], char res[16][16])
 {
 	FILE *textfile;
 	char ch;
@@ -44,7 +44,7 @@ int read_board(char file[], int res[16][16])
 	return 0;
 }
 
-void write_board(char file[], int res[16][16])
+void write_board(char file[], char res[16][16])
 {
 	FILE* ptr;
 	char* name = strcat(file,".result");
@@ -57,7 +57,7 @@ void write_board(char file[], int res[16][16])
 		{
 			if (x == 4 || x == 8 || x == 12)
 				fprintf(ptr," ");
-			int c = res[y][x];
+			char c = res[y][x];
 			if (c <= 9)
 				fprintf(ptr,"%c", c + '0');
 			else

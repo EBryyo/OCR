@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stddef.h>
 
-int read_board(char file[], unsigned int res[9][9])
+int read_board(char file[], unsigned char res[9][9])
 {
 	FILE *textfile;
 	char ch;
@@ -40,7 +40,7 @@ int read_board(char file[], unsigned int res[9][9])
 	return 0;
 }
 
-void write_board(char file[], unsigned int res[9][9])
+void write_board(char file[], unsigned char res[9][9])
 {
 	FILE* ptr;
 	char* name = strcat(file,".result");

@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	unsigned int tab[9][9];
+	unsigned char tab[9][9];
 	//for(size_t x = 0; x < 9; x++)
 	//	for(size_t y = 0; y < 9; y++)
 	//		tab[x][y] = 2;
