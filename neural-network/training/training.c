@@ -6,34 +6,79 @@
 #include "../structures/layer.h"
 
 
-double* get_target_array(int i, size_t len)
-{ //returns the desired output array for a given digit
-    double* res = calloc(len, sizeof(int));
-    res[i] = 0.99;
+void get_target_array(double* target, int i, size_t len)
+{ 
+    //fills target array with target values for a given neuron
+    //target must be allocated beforehand
+    
+    target[i] = 0.99;
     for(size_t n = 0; n < len; n++)
     {
         if (n != i)
         {
-            res[n] = 0.01;
+            target[n] = 0.01;
         }
     }
-    return res;
 }
 
-
-void main(void)
+double total_error(double* output, double* target, size_t len)
 {
-    load_mnist();
-    mlp* n = import_mlp("network");
-    //train image :
-    //  train_image[60000][784] (type: double, normalized, flattened)
-    //train label :
-    //  train_label[60000] (type: int)
-    //test image : 
-    //  test_image[10000][784] (type: double, normalized, flattened)
-    //test label : 
-    //test_label[10000] (type: int)
-    print_mlp(n);
+    //computes total error of output array according to target array
+    
+    double err = 0;
+    for(size_t i = 0; i < len; i++)
+    {
+        err += 0.5 * pow((target[i] - output[i]), 2);
+    }
+}
 
-    export_mlp(n, "network");
+void gradient_descent(mlp* n, double* target, double* input)
+{
+    //applies the gradient descent algorithm on MLP n
+    
+
+    //compute outputs for every layer
+    
+
+    //allocate memory for new weights
+
+
+    //compute new weights
+
+
+    //free current weights
+
+
+    //update MLP with new weights
+
+    return void;
+}
+
+void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
+{
+    //exit clauses
+    
+    if (n->layers[0].w != i_len)
+    {
+        printf("input length mismatch");
+        return;
+    }
+    if (n->layers[n->count-1].w != t_len)
+    {
+        printf("output length mismatch");
+        return;
+    }
+
+    //get target array
+    
+    double* target_array = calloc(t_len, sizeof(double));
+    get_target_array(target_array, target, t_len);
+    
+    //apply gradient descent
+    
+    gradient_descent(n, target_array, input);
+    
+    //free memory allocations
+    
+    free(target);
 }
