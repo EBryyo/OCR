@@ -19,6 +19,7 @@ void get_target_array(double* target, int i, size_t len)
             target[n] = 0.01;
         }
     }
+    printf("target array obtained.\n");
 }
 
 double total_error(double* output, double* target, size_t len)
@@ -30,62 +31,24 @@ double total_error(double* output, double* target, size_t len)
     {
         err += 0.5 * pow((target[i] - output[i]), 2);
     }
+    printf("total error computed.\n");
+    return err;
 }
 
 void gradient_descent(mlp* n, double* target, double* input)
 {
     //applies the gradient descent algorithm on MLP n
-    
-    double **layer_outputs, ***nweights;
-    size_t i, w, h;
+
+
     //compute outputs for every layer
-    layer_outputs = compute(n, input);   
 
     //allocate memory for new weights
-    nweights = calloc(n->count - 1, sizeof(double**));
-    for(i = 0; i < n->count - 1; i++)
-    {
-        nweights[i] = calloc(n->layers[i].w, sizeof(double*));
-        for(w = 0; w < n->layers[i].w; w++)
-        {
-            nweights[i][w] = calloc(n->layers[i].h, sizeof(double));
-        }
-    }
-    
+
     //compute new weights
-    for(i = 0; i < n->count - 1; i++)
-    {
-        for(w = 0; w < n->layers[i+1].w; w++)
-        {
-            for(h = 0; h < n->layers[i+1].h; h++)
-            {
-                if (i == n->count - 2)
-                {
-                    //gradient descent for output layer
-                }
-                else
-                {
-                    //gradient descent for hidden layer
-                }
-            }
-        }
-    }
 
     //free current weights
-    for(i = 1; i < n->count; i++)
-    {
-        for(w = 0; w < n->layers[i].w; i++)
-        {
-            free(n->layers[i].weights[w]);
-        }
-        free(n->layers[i].weights);
-    }
 
     //update MLP with new weights
-    for(i = 0; i < n->count - 1; i++)
-    {
-        n->layers[i + 1].weights = nweights[i];
-    }
 }
 
 void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
