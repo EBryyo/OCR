@@ -21,26 +21,76 @@ int longueur_case(SDL_Surface* grid_convert)
 	Uint8* r, g, b;
 	SDL_GetRGB(pixels[x],format,&r,&g,&b);
 	int y = grid_convert->w;
-	Uint8* rsub, gsub, bsub;
-	rsub = r;
-	gsub = g;
-	bsub = b;
-	while (rsub<200 || gsub<200 || bsub<200)
+	while (r==0)
 	{
 		x+=1;
 		y+=y;
-		SDL_GetRGB(pixels[x],format,%rsub,&gsub,&bsub);
+		SDL_GetRGB(pixels[x],format,%r,&g,&b);
 	}
 	int longcase = x;
-	while (rsub>100 || gsub>100 || bsub>100)
+	while (r==255)
 	{
 		longcase+=1;
-		SDL_GetRGB(pixels[longcase+y],format,%rsub,%gsub,%bsub);
+		SDL_GetRGB(pixels[longcase+y],format,%r,%g,%b);
 	}
-	while (rsub>200 || gsub<200 ||bsub<200)
+	while (r==0)
 	{
 		longcase+=1;
-		SDL_GetRGB(pixels[longcase+y],format,%rsub,%gsub,%bsub);
+		SDL_GetRGB(pixels[longcase+y],format,%r,%g,%b);
 	}
 	return longcase;
 }
+
+Uint32* decoupe_number(SDL_Surface* grid_convert, int x, int y, int longcase)
+{
+	//longueur case avec des trucs vides
+	Uint32* bloc[longcase*longcase];
+
+	//format des pixels
+	SDL_PixelFormat* format = grid_convert->format;
+	
+	//hauteur
+	for (int j = 0;j<=longcase;j++)
+	{
+		//longueur
+		for (int i = 0;i<=longcase;i++)
+		{
+			bloc[j*longcase+i] = SDL_MapRGB(format,&r,&g,&b);
+		}
+	}
+	return bloc;
+}
+
+Uint32** decoupe_grid(SDL_Surface* grid_convert, int longcase)
+{
+	Uint32** res[longcase][longcase];
+	for (size_t j = 0;j!=9;j++)
+	{
+		for (size_t i = 0;i!=9;i++)
+		{
+			res[i] = decoupe_number(grid_convert,
+				i*longcase,j*longcase,longcase);
+		}
+	}
+	return res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
