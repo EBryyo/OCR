@@ -23,6 +23,8 @@ void sigmoid(double* input, size_t len)
     //applies sigmoid function in place to input array 
     for(size_t i = 0; i < len; i++)
     {
+        //printf("%3g  ", input[i]);
+        //printf("%3g\n", 1 / (1 + exp(-input[i])));
         input[i] = 1 / (1 + exp(-input[i]));
         //input[i] = (input[i] > 0.5);
     }

@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+double randfrom(double min, double max) 
+{
+    double range = (max - min); 
+    double div = RAND_MAX / range;
+    return min + (rand() / div);
+}
+
 unsigned char maxindex(double* array, size_t len)
 {
     //returns the index of the highest member of array
@@ -59,8 +66,9 @@ mlp* init(size_t count, size_t* layers)
             {
                 //weight initialization is done here. 
                 //figure something out if these need to be random. :3
-                n->layers[i].weights[j][k] = 1;
+                n->layers[i].weights[j][k] = randfrom(0,1);
             }
+            n->layers[i].biases[j] = 0;
         }
     }
     

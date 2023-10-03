@@ -19,7 +19,7 @@ void get_target_array(double* target, int i, size_t len)
             target[n] = 0.01;
         }
     }
-    //printf("target array obtained.\n");
+    // printf("target array obtained.\n");
 }
 
 double error(double target, double output)
@@ -27,6 +27,16 @@ double error(double target, double output)
     //computes the error of an output neuron
 
     return 0.5 * pow((output - target), 2);
+}
+
+double total_error(double* target, double *output, size_t len)
+{
+    double res = 0;
+    for(size_t i = 0; i < len; i++)
+    {
+        res += error(target[i], output[i]);
+    }
+    return res;
 }
 
 
@@ -41,7 +51,17 @@ void gradient_descent(mlp* n, double* target, double* input)
 
     //compute outputs for every layer
     outputs = compute(n, input);
-
+    /*
+    printf("outputs:\n");
+    for(i = 1; i < n->count - 1; i++)
+    {
+        for(w = 0; w < n->layers[i+1].w; w++)
+        {
+            printf("%zu: %2g  ", w, outputs[i][w]);
+        }
+        printf("\n\n");
+    }
+    */
     //allocate memory for new weights
     new_weights = calloc(n->count - 1, sizeof(double**));
     for(i = 0; i < n->count - 1; i++)
@@ -67,12 +87,16 @@ void gradient_descent(mlp* n, double* target, double* input)
                 if (i == n->count - 2)
                 {
                     //calculation for output layer
-
+                    double out = outputs[i][w];
+                    double s = -(target[w]-out)*out*(1-out)*outputs[i-1][w];
+                    //printf("value of out : %3g\n", out);
+                    new_weights[i][w][h] = n->layers[i+1].weights[w][h] - 0.5 * s;
+                    //new_weights[i][w][h] = 1;
                 }
                 else
                 {
                     //calculation for hidden layer
-                    
+                    new_weights[i][w][h] = n->layers[i+1].weights[w][h];
                 }
             }
         }
@@ -122,7 +146,11 @@ void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)
     
     double* target_array = calloc(t_len, sizeof(double));
     get_target_array(target_array, target, t_len);
-    
+    //for(size_t i = 0; i < t_len; i++)
+    //{
+    //    printf("%2g ", target_array[i]);
+    //}
+    //printf("\n");
     //apply gradient descent
     
     gradient_descent(n, target_array, input);
