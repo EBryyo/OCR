@@ -19,7 +19,7 @@ void get_target_array(double* target, int i, size_t len)
             target[n] = 0.01;
         }
     }
-    printf("target array obtained.\n");
+    //printf("target array obtained.\n");
 }
 
 double error(double target, double output)
@@ -40,11 +40,11 @@ void gradient_descent(mlp* n, double* target, double* input)
     double*** new_weights;
 
     //compute outputs for every layer
-    double** outputs = compute(n, input);
+    outputs = compute(n, input);
 
     //allocate memory for new weights
     new_weights = calloc(n->count - 1, sizeof(double**));
-    for(i = 0; i < count - 1; i++)
+    for(i = 0; i < n->count - 1; i++)
     {
         new_weights[i] = calloc(n->layers[i + 1].w, sizeof(double*));
         for(w = 0; w < n->layers[i + 1].w; w++)
@@ -77,12 +77,12 @@ void gradient_descent(mlp* n, double* target, double* input)
             }
         }
     }
-
+    
 
     //free current weights
     for(i = 1; i < n->count; i++)
     {
-        for(w = 0; w < n->layers[i].w; i++)
+        for(w = 0; w < n->layers[i].w; w++)
         {
             free(n->layers[i].weights[w]);
         }
@@ -93,6 +93,14 @@ void gradient_descent(mlp* n, double* target, double* input)
     {
         n->layers[i].weights = new_weights[i-1];
     }
+    free(new_weights);
+
+    //free outputs array
+    for(i = 0; i < n->count - 1; i++)
+    {
+        free(outputs[i]);
+    }
+    free(outputs);
 }
 
 void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)

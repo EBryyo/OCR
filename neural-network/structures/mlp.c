@@ -103,10 +103,11 @@ double** compute(mlp* network, double* input)
     {
         //compute output into i
         compute_output(network->layers[k], i, o);
-        
+        if (k == 1)
+            free(i);
         //memory allocated to i is no longer needed after o is determined,
         //and it will need to be resized, so it is freed
-        free(i);
+        //free(i);
 
         //insert the kth layer's outputs into res
         res[k-1] = o;

@@ -21,12 +21,12 @@ int main(int argc, char** argv)
     //test label : 
     //test_label[10000] (type: int)
     
-    for(size_t i = 0; i < 60000; i++)
+    for(size_t i = 0; i < 1000; i++)
     {
         train(n, train_label[i], 10, train_image[i], 28 * 28);
     }
 
-    //print_mlp(n);
+    print_mlp(n);
     export_mlp(n, "../networks/OCR");
     free_mlp(n);
 }
