@@ -55,6 +55,28 @@ void gradient_descent(mlp* n, double* target, double* input)
 
     //compute new weights
     
+    //iterate on each layer
+    for(i = 0; i < n->count - 1; i++)
+    {
+        //iterate on each neuron
+        for(w = 0; w < n->layers[i+1].w; w++)
+        {
+            //iterate on each weight
+            for(h = 0; h < n->layers[i+1].h; h++)
+            {
+                if (i == n->count - 2)
+                {
+                    //calculation for output layer
+
+                }
+                else
+                {
+                    //calculation for hidden layer
+                    
+                }
+            }
+        }
+    }
 
 
     //free current weights
