@@ -22,33 +22,55 @@ void get_target_array(double* target, int i, size_t len)
     printf("target array obtained.\n");
 }
 
-double total_error(double* output, double* target, size_t len)
+double error(double target, double output)
 {
-    //computes total error of output array according to target array
-    
-    double err = 0;
-    for(size_t i = 0; i < len; i++)
-    {
-        err += 0.5 * pow((target[i] - output[i]), 2);
-    }
-    printf("total error computed.\n");
-    return err;
+    //computes the error of an output neuron
+
+    return 0.5 * pow((output - target), 2);
 }
+
 
 void gradient_descent(mlp* n, double* target, double* input)
 {
     //applies the gradient descent algorithm on MLP n
 
+    double** outputs;
+    size_t i, j, k, w, h;
+    double err;
+    double*** new_weights;
 
     //compute outputs for every layer
+    double** outputs = compute(n, input);
 
     //allocate memory for new weights
+    new_weights = calloc(n->count - 1, sizeof(double**));
+    for(i = 0; i < count - 1; i++)
+    {
+        new_weights[i] = calloc(n->layers[i + 1].w, sizeof(double*));
+        for(w = 0; w < n->layers[i + 1].w; w++)
+        {
+            new_weights[i][w] = calloc(n->layers[i+1].h, sizeof(double));
+        }
+    }
 
     //compute new weights
+    
+
 
     //free current weights
-
+    for(i = 1; i < n->count; i++)
+    {
+        for(w = 0; w < n->layers[i].w; i++)
+        {
+            free(n->layers[i].weights[w]);
+        }
+        free(n->layers[i].weights);
+    }
     //update MLP with new weights
+    for(i = 1; i < n->count; i++)
+    {
+        n->layers[i].weights = new_weights[i-1];
+    }
 }
 
 void train(mlp* n, int target, size_t t_len, double* input, size_t i_len)

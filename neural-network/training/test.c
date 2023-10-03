@@ -19,7 +19,7 @@ unsigned char get_max(double* input)
 void main(void)
 {
     load_mnist();
-    mlp* n = import_mlp("network");
+    mlp* n = import_mlp("../networks/OCR");
     //train image :
     //  train_image[60000][784] (type: double, normalized, flattened)
     //train label :

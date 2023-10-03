@@ -23,7 +23,6 @@ int main(int argc, char** argv)
     
     for(size_t i = 0; i < 60000; i++)
     {
-        printf("trained. for real\n");
         train(n, train_label[i], 10, train_image[i], 28 * 28);
     }
 
