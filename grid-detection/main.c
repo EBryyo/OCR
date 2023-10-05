@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <err.h>
-#include <SDL/SDl.h>
-#include <SDL/SDL_image.h>
-#include <decoupe.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include "headers/decoupe.h"
+#include "headers/detection.h"
 
-int main(int argc, char* argv[])
+int main()//int argc, char* argv[])
 {
-	if (argc !=2)
-		errx(EXIT_FAILURE, "les parametres ca va pas du tout mon gars");
+	//if (argc !=2)
+	//	errx(EXIT_FAILURE, "les parametres ca va pas du tout mon gars");
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		errx(EXIT_FAILURE,"%s",SDL_GetError());
@@ -20,9 +21,9 @@ int main(int argc, char* argv[])
 	if (renderer == NULL)
 		errx(EXIT_FAILURE,"%s",SDL_GetError());
 	
-	SDL_Surface* grid = load_image(argv[1]);
-	if (grid == NULL)
-		erxx(EXIT_FAILURE,"%s",SDL_GetError());
+	//SDL_Surface* grid = load_image(argv[1]);
+	//if (grid == NULL)
+	//	errx(EXIT_FAILURE,"%s",SDL_GetError());
 
 	//return fonction de decoupe qui renvoie array de float.
 
