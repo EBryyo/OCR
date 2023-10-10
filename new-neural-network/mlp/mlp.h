@@ -9,6 +9,9 @@ typedef struct {
     Layer *layers; //layers 
 } Mlp;
 
+void free_mlp(Mlp* n);
+//frees MLP from heap memory
+
 Mlp* init(size_t count, size_t* layers);
 //initializes MLP with count-1 layers 
 
@@ -24,4 +27,5 @@ double** get_activation(double* input, Mlp* n);
 int compute_output(double* input, Mlp* n);
 //returns the final output of the MLP with a given input
 
+void print_mlp(Mlp* n);
 #endif
