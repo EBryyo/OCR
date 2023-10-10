@@ -54,7 +54,7 @@ Mlp* init(size_t count, size_t* layers)
             //intialize each weight
             for(h = 0; h < n->layers[i].h; h++)
             {
-                n->layers[i].weights[w][h] = randfrom(0,1);
+                n->layers[i].weights[w][h] = randfrom(-1,1);
             }
         }
     }
@@ -153,13 +153,61 @@ void export_mlp(char* target, Mlp* n)
 double** get_activation(double* input, Mlp* n)
 {
     //returns the activations of each layer with a given input
+    double** act;
 
+    act = calloc(n->count, sizeof(double*));
+    
+    act[0] = activation(n->layers[0], input);
+    /*
+    for(size_t j = 0; j < n->layers[0].w; j++)
+    {
+        printf("%g ", act[0][j]);
+    }
+    printf("\n");
+    */
+
+    for (size_t i = 1; i < n->count; i++)
+    {
+        act[i] = activation(n->layers[i], act[i-1]);
+        /*
+        for(size_t j = 0; j < n->layers[i].w; j++)
+        {
+            printf("%g ", act[i][j]);
+        }
+        printf("\n");
+        */
+    }
+
+    return act;
 }
 
 int compute_output(double* input, Mlp* n)
 {
     //returns the final output of the MLP with a given input
+    size_t i, r;
+    double cur;
 
+    double** activation = get_activation(input, n);
+    double* output = activation[n->count - 1];
+     
+    cur = output[0];
+    r = 0;
+    for(i = 1; i < n->layers[n->count-1].w; i++)
+    {
+        if (output[i] > cur)
+        {
+            r = i;
+            cur = output[i];
+        }
+    }
+
+    //free the activation matrix from heap
+    for(i = 0; i < n->count; i++)
+    {
+        free(activation[i]);
+    }
+    free(activation);
+    return (int)r;
 }
 
 void print_mlp(Mlp* n)

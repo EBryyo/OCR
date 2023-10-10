@@ -10,6 +10,6 @@ typedef struct {
     double **weights; //weights of each neuron - len = w
 } Layer;
 
-double* activation(double* input, size_t len);
+double* activation(Layer layer, double* input);
 
 #endif

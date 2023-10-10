@@ -20,6 +20,8 @@ void testXOR(void)
         printf("test %i: | %g | %g | => %i\n",
                 i, x[0], x[1], compute_output(x, n));
     }
+    free(x);
+    export_mlp("networks/XOR",n);
 }
 
 void testOCR(void)
@@ -31,6 +33,7 @@ void testOCR(void)
         printf("test %i:\n\texpected: %i\tactual: %i\n",
                 i, train_label[i], compute_output(train_image[i], n));
     }
+    export_mlp("networks/OCR", n);
 }
 
 int main(int argc, char* argv[])
