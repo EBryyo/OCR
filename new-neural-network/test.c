@@ -2,11 +2,13 @@
 #include "training/mnist.h"
 #include <stddef.h>
 #include <stdlib.h>
+#include "mlp/mlp.c"
+#include "layer/layer.c"
 
 void testXOR()
 {
     Mlp* n = import_mlp("networks/XOR");
-    int* x = calloc(2, sizeof(int));
+    double* x = calloc(2, sizeof(double));
 
     for(size_t i = 0; i < 100; i++)
     {
@@ -29,22 +31,19 @@ void testOCR()
     }
 }
 
-int main(int argc, char* argc[])
+int main(int argc, char* argv[])
 {
     if (argc != 2)
         printf("invalid argument count\n");
         return 1;
-    switch(argc[1])
+    if (argv[1] == "XOR")
+        testXOR();
+    else if (argv[1] == "OCR")
+        testOCR();
+    else
     {
-        case "XOR":
-            testXOR();
-            break;
-        case "OCR":
-            testOCR();
-            break;
-        default:
-            printf("invalid test\n");
-            return 1;
+        printf("invalid test\n");
+        return 1;
     }
 
     return 0;
