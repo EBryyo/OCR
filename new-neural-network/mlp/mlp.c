@@ -5,21 +5,67 @@
 #include <stdlib.h>
 #include <string.h>
 
-void free_mlp(Mlp* n)
+double randfrom(double min, double max)
 {
-    //frees MLP from heap memory
-    
+    double range = (max - min);
+    double div = RAND_MAX / range;
+    return min + (rand() / div);
 }
 
 Mlp* init(size_t count, size_t* layers)
 {
     //initializes MLP with count-1 layers 
-        
+    size_t i, w, h;
+    Mlp* n = calloc(1, sizeof(Mlp));
+
+    //set layer count
+    n->count = count-1;
+
+    //allocate memory for layers;
+    n->layers = calloc(count-1, sizeof(Layer));
+
+    //set input count
+    n->layers[0].h = layers[0];
+
+    //for each layer
+    for(i = 0; i < n->count; i++)
+    {
+        //parameter matrix dimensions
+        if (i)
+            n->layers[i].h = n->layers[i-1].w;
+        n->layers[i].w = layers[i+1];
+
+        //initialize weights and biases
+        n->layers[i].biases = calloc(n->layers[i].w, sizeof(double));
+        n->layers[i].weights = calloc(n->layers[i].w, sizeof(double*));
+
+        //initialize each bias
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            n->layers[i].biases[w] = 0;
+        }
+
+        //for each neuron
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            //allocate memory for weights
+            n->layers[i].weights[w] = calloc(n->layers[i].h, sizeof(double));
+
+            //intialize each weight
+            for(h = 0; h < n->layers[i].h; h++)
+            {
+                n->layers[i].weights[w][h] = randfrom(0,1);
+            }
+        }
+    }
+
+    return n;
 }
 
 Mlp* import_mlp(char* source)
 {
     Mlp* n;
+    size_t i, w;
     //returns the mlp with parameters encoded in file
     FILE* file = fopen(source, "rb");
     n = calloc(1, sizeof(Mlp));
@@ -27,19 +73,54 @@ Mlp* import_mlp(char* source)
     //read layer count
     fread(&n->count, sizeof(size_t), 1, file);
     
+    //allocate memory for layers
+    n->layers = calloc(n->count, sizeof(Layer));
+    
+    //set neuron counts for each layer
+    fread(&n->layers[0].h, sizeof(size_t), 1, file);
+    for(i = 0; i < n->count; i++)
+    {
+        if (i != 0)
+            n->layers[i].h = n->layers[i-1].w;
+        fread(&n->layers[i].w, sizeof(size_t), 1, file);
+    }
+
+    //for each layer
+    for(i = 0; i < n->count; i++)
+    {
+        //allocate memory for weights and biases
+        n->layers[i].biases = calloc(n->layers[i].w, sizeof(double));
+        n->layers[i].weights = calloc(n->layers[i].w, sizeof(double*));
+
+        //read biases from file
+        fread(n->layers[i].biases, sizeof(double), n->layers[i].w, file);
+
+        //for each neuron
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            //allocate memory for weights
+            n->layers[i].weights[w] = calloc(n->layers[i].h, sizeof(double));
+
+            //read weights from file
+            fread(n->layers[i].weights[w], sizeof(double), 
+                    n->layers[i].h, file);
+        }
+    }
+
+    return n;
     fclose(file);
 }
 
-void export_mlp(char* file, Mlp* n)
+void export_mlp(char* target, Mlp* n)
 {
     //encodes parameters of network in file
-    FILE* file = fopen(source, "wb");
+    FILE* file = fopen(target, "wb");
     size_t i, j, w, h;
 
     //write layer count in file
     fwrite(&n->count, sizeof(size_t), 1, file);
 
-    //write each layer's neuron coutn in file
+    //write each layer's neuron count in file
     fwrite(&n->layers[0].h, sizeof(size_t), 1, file);
     for(i = 0; i < n->count; i++)
     {
@@ -57,11 +138,15 @@ void export_mlp(char* file, Mlp* n)
             //write all weights in file
             fwrite(n->layers[i].weights[w], 
                     sizeof(double), n->layers[i].h, file);
+            free(n->layers[i].weights[w]);
         }
+        free(n->layers[i].biases);
+        free(n->layers[i].weights);
     }
 
     fclose(file);
-    free_mlp(n);
+    free(n->layers);
+    free(n);
 
 }
 
@@ -79,5 +164,27 @@ int compute_output(double* input, Mlp* n)
 
 void print_mlp(Mlp* n)
 {
-    
+    size_t i, w, h;
+    printf("MULTI LAYER PERCEPTRON\n\n");
+    printf("Layer 0:\n\n\tCount: %zu\n\n", n->layers[0].h);
+    for(i = 0; i < n->count; i++)
+    {
+        printf("Layer %zu:\n\n\tCount: %zu\n\n", i+1, n->layers[i].w);
+        printf("\tbiases:  ");
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            printf(" %3g", n->layers[i].biases[w]);
+        }
+        printf("\n\n");
+        for(w = 0; w < n->layers[i].w; w++)
+        {
+            printf("\tneuron %zu:", w);
+            for(h = 0; h < n->layers[i].h; h++)
+            {
+                printf(" %3g", n->layers[i].weights[w][h]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
 }

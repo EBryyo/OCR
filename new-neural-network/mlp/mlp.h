@@ -1,3 +1,4 @@
+#include "../layer/layer.h"
 #ifndef MLP_H
 #define MLP_H
 
@@ -9,8 +10,6 @@ typedef struct {
     Layer *layers; //layers 
 } Mlp;
 
-void free_mlp(Mlp* n);
-//frees MLP from heap memory
 
 Mlp* init(size_t count, size_t* layers);
 //initializes MLP with count-1 layers 
