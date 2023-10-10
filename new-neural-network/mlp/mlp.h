@@ -6,16 +6,19 @@ typedef struct {
     Layer *layers; //layers
 } Mlp;
 
-Mlp* import_mlp(char* file);
+Mlp* init(size_t count, size_t* layers);
+//initializes MLP with count-1 layers 
+
+Mlp* import_mlp(char* source);
 //returns the mlp with parameters encoded in file
 
-void export_mlp(char* file, Mlp* network);
+void export_mlp(char* file, Mlp* n);
 //encodes parameters of network in file
 
-double** get_activation(double* input, Mlp* network);
+double** get_activation(double* input, Mlp* n);
 //returns the activations of each layer with a given input
 
-int compute_output(double* input, Mlp* network);
+int compute_output(double* input, Mlp* n);
 //returns the final output of the MLP with a given input
 
 #endif
