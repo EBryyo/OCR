@@ -2,8 +2,11 @@
 #define MLP_H
 
 typedef struct {
+    //INPUT LAYER IS VIRTUAL, NEVER INSTANTIATED. 
+    //It is only defined by its width,
+    //which is also the height of the second layer (layers[0])
     size_t count; //number of layers (excluding input layer)
-    Layer *layers; //layers
+    Layer *layers; //layers 
 } Mlp;
 
 Mlp* init(size_t count, size_t* layers);
