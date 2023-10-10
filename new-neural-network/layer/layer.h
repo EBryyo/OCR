@@ -1,6 +1,7 @@
-#include <stddef.h>
 #ifndef LAYER_H
 #define LAYER_H
+
+#include <stddef.h>
 
 typedef struct {
     size_t w; //width of the layer - number of neurons

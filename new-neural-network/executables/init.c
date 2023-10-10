@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "mlp/mlp.h"
-#include "layer/layer.h"
+#include "../mlp/mlp.h"
+#include "../layer/layer.h"
 
 int main(int argc, char** argv)
 {

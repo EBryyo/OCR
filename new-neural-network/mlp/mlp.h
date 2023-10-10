@@ -1,6 +1,7 @@
-#include "../layer/layer.h"
 #ifndef MLP_H
 #define MLP_H
+
+#include "../layer/layer.h"
 
 typedef struct {
     //INPUT LAYER IS VIRTUAL, NEVER INSTANTIATED. 
