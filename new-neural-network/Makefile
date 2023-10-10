@@ -1,8 +1,14 @@
-init:
+CFLAGS= -g -fsanitize=address
+LDFLAGS= -Wall -Wextra -Werror -g -fsanitize=address
+
+init: init.c mlp/mlp.c layer/layer.c
+	gcc -o $@ $^ -lm
+
+train: train.c mlp/mlp.c layer/layer.c
+	gcc -o $@ $^ -lm
+
+test: test.c mlp/mlp.c layer/layer.c
+	gcc -o $@ $^ -lm
 
 clean:
-
-train:
-
-test:
-
+	rm init test train
