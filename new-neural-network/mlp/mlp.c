@@ -1,4 +1,4 @@
-#include "layer.h"
+#include "../layer/layer.h"
 #include "mlp.h"
 #include <stdio.h>
 #include <stddef.h>
