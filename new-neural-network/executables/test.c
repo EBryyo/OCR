@@ -7,16 +7,15 @@
 #include <string.h>
 #include <time.h>
 
+
 void testXOR(void)
 {
     srand(time(NULL));
     size_t p = 0;
     int o;
     int i, j;
-    printf("coucou\n");
     Mlp* n = import_mlp("networks/XOR");
     double* x = calloc(2, sizeof(double));
-    print_mlp(n);
     for(size_t k = 0; k < 100; k++)
     {
         i = (rand() & 1);
