@@ -18,6 +18,7 @@ double* target_array(int target, size_t len)
 void gradient_descent(double* input, double* target, Mlp* n)
 {
     //updates weights of network using gradient descent
+    
 }
 
 void train(double* input, int target, Mlp* network, size_t len)
@@ -29,9 +30,9 @@ void train(double* input, int target, Mlp* network, size_t len)
 	return;
     }
 
-    double* target = target_array(target, network->layers[network->count-1].w);
+    double* targetarray = target_array(target, network->layers[network->count-1].w);
 
-    gradient_desent(input, target, network);
+    gradient_descent(input, targetarray, network);
 
-    free(target);
+    free(targetarray);
 }

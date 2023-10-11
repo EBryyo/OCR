@@ -12,6 +12,9 @@ typedef struct {
 } Mlp;
 
 
+double randfrom(double min, double max);
+
+
 Mlp* init(size_t count, size_t* layers);
 //initializes MLP with count-1 layers 
 
