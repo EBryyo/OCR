@@ -5,34 +5,50 @@
 #include "../layer/layer.h"
 #include "../mlp/mlp.h"
 #include <string.h>
+#include <time.h>
 
 void testXOR(void)
 {
+    srand(time(NULL));
+    size_t p = 0;
+    int o;
+    int i, j;
     printf("coucou\n");
     Mlp* n = import_mlp("networks/XOR");
     double* x = calloc(2, sizeof(double));
     print_mlp(n);
-    for(size_t i = 0; i < 100; i++)
+    for(size_t k = 0; k < 100; k++)
     {
-        x[0] = (double) (rand() & 1);
-        x[1] = (double) (rand() & 1);
-
-        printf("test %i: | %g | %g | => %i\n",
-                i, x[0], x[1], compute_output(x, n));
+        i = (rand() & 1);
+        j = (rand() & 1);
+        x[0] = (double) i;
+        x[1] = (double) j;
+        o = compute_output(x, n);
+        if (o == (i ^ j))
+            p++;
+        printf("test %i: | %g | %g | => %i, should be %i\n",
+                k, x[0], x[1], o, i ^ j);
     }
+    printf("\nAccuracy : %i percent\n", p);
     free(x);
     export_mlp("networks/XOR",n);
 }
 
 void testOCR(void)
 {
+    size_t p = 0;
+    int o;
     Mlp* n = import_mlp("networks/OCR");
     load_mnist();
     for(size_t i = 0; i < 10000; i++)
     {
+        o = compute_output(train_image[i],n);
+        if (o == train_label[i]) 
+            p++;
         printf("test %i:\n\texpected: %i\tactual: %i\n",
-                i, train_label[i], compute_output(train_image[i], n));
+                i, train_label[i], o);
     }
+    printf("\nAccuracy : %g percent\n", (double)10000 / (double)p);
     export_mlp("networks/OCR", n);
 }
 
