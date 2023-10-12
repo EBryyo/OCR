@@ -7,6 +7,25 @@
 #include "../training/training.h"
 #include <time.h>
 
+
+double testOCR(Mlp* n)
+{
+    double res;
+    size_t p = 0;
+    int o;
+    size_t sample = 10000;
+    load_mnist();
+    for(size_t i = 0; i < sample; i++)
+    {
+        o = compute_output(train_image[i],n);
+        if (o == train_label[i]) 
+            p++;
+    }
+    res = (double) p  * 100/ (double) sample;
+    printf("\nAccuracy : %g percent\n", res);
+    return (res);
+}
+
 void trainXOR(void)
 {
     Mlp* n = import_mlp("networks/XOR");
@@ -29,16 +48,21 @@ void trainXOR(void)
 
 void trainOCR(void)
 {
-    Mlp* n = import_mlp("networks/OCR");
+    Mlp* n;
+    n = import_mlp("networks/OCR");
     size_t i, count;
     count = 60000;
     load_mnist();
     srand(time(NULL));
-    for(size_t k = 0; k < count; k++)
-    {
-        i = randfrom(0, 60000);
-        train(train_image[i], train_label[i], n, 28*28);
-    }
+    do {
+        export_mlp("networks/OCR", n);
+        n = import_mlp("networks/OCR");
+        for(size_t k = 0; k < count; k++)
+        {
+            i = randfrom(0, 60000);
+            train(train_image[i], train_label[i], n, 28*28);
+        }
+    } while (testOCR(n) < 99);
     export_mlp("networks/OCR", n);
 }
 

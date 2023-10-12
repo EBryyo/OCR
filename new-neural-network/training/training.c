@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <math.h>
 
-#define LEARNING_RATE 0.5
+#define LEARNING_RATE 0.1
 
 double* target_array(int target, size_t len)
 {
