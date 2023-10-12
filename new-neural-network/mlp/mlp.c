@@ -43,6 +43,7 @@ Mlp* init(size_t count, size_t* layers)
         for(w = 0; w < n->layers[i].w; w++)
         {
             n->layers[i].biases[w] = randfrom(-1,1);
+            //n->layers[i].biases[w] = 0;
         }
 
         //for each neuron

@@ -37,9 +37,10 @@ void testOCR(void)
 {
     size_t p = 0;
     int o;
+    size_t sample = 10000;
     Mlp* n = import_mlp("networks/OCR");
     load_mnist();
-    for(size_t i = 0; i < 10000; i++)
+    for(size_t i = 0; i < sample; i++)
     {
         o = compute_output(train_image[i],n);
         if (o == train_label[i]) 
@@ -47,7 +48,7 @@ void testOCR(void)
         printf("test %i:\n\texpected: %i\tactual: %i\n",
                 i, train_label[i], o);
     }
-    printf("\nAccuracy : %g percent\n", (double)10000 / (double)p);
+    printf("\nAccuracy : %g percent\n", (double) p * 100 / (double) sample);
     export_mlp("networks/OCR", n);
 }
 

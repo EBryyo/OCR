@@ -15,13 +15,13 @@ void trainXOR(void)
     int o;
     int i, j;
     double* x = calloc(2, sizeof(double));
-    for(size_t k = 0; k < 1000; k++)
+    for(size_t k = 0; k < 10000; k++)
     {
-	i = (rand() & 1);
-	j = (rand() & 1);
-	x[0] = (double) i;
-	x[1] = (double) j;
-	train(x, i ^ j, n, 2);
+        i = (rand() & 1);
+        j = (rand() & 1);
+        x[0] = (double) i;
+        x[1] = (double) j;
+        train(x, i != j, n, 2);
     }
     free(x);
     export_mlp("networks/XOR",n);
@@ -36,8 +36,8 @@ void trainOCR(void)
     srand(time(NULL));
     for(size_t k = 0; k < count; k++)
     {
-	i = randfrom(0, 60000);
-	train(train_image[i], train_label[i], n, 28*28);
+        i = randfrom(0, 60000);
+        train(train_image[i], train_label[i], n, 28*28);
     }
     export_mlp("networks/OCR", n);
 }
