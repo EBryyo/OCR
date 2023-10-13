@@ -45,8 +45,7 @@ void testOCR(void)
         o = compute_output(train_image[i],n);
         if (o == train_label[i]) 
             p++;
-        else
-            printf("test %i:\n\texpected: %i\tactual: %i\n",
+        printf("test %i:\n\texpected: %i\tactual: %i\n",
                 i, train_label[i], o);
     }
     printf("\nAccuracy : %g percent\n", (double) p * 100 / (double) sample);

@@ -64,7 +64,7 @@ void gradient_descent(double* input, double* target, Mlp* n)
     //get activation of mlp with given input
     activation = get_activation(input, n);
 
-    //compute gradient
+    //compute error
     for(i = n->count - 1; i <= n->count; i--)
     {
         if (i == n->count - 1)
@@ -113,8 +113,7 @@ void gradient_descent(double* input, double* target, Mlp* n)
         for(w = 0; w < n->layers[i].w; w++)
         {
             for(h = 0; h < n->layers[i].h; h++)
-            {
-                
+            {    
                  n->layers[i].weights[w][h] -= 
                         LEARNING_RATE * error[i][w] * 
                             ((i) ? activation[i-1][h] : input[h]);
