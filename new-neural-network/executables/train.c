@@ -22,7 +22,7 @@ double testOCR(Mlp* n)
             p++;
     }
     res = (double) p  * 100/ (double) sample;
-    printf("\nAccuracy : %g percent\n", res);
+    printf("Accuracy : %g percent\n", res);
     return (res);
 }
 

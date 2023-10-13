@@ -26,7 +26,7 @@ void testXOR(void)
         if (o == (i ^ j))
             p++;
         printf("test %i: | %g | %g | => %i, should be %i\n",
-                k, x[0], x[1], o, i ^ j);
+            k, x[0], x[1], o, i ^ j);
     }
     printf("\nAccuracy : %i percent\n", p);
     free(x);
@@ -45,7 +45,8 @@ void testOCR(void)
         o = compute_output(train_image[i],n);
         if (o == train_label[i]) 
             p++;
-        printf("test %i:\n\texpected: %i\tactual: %i\n",
+        else
+            printf("test %i:\n\texpected: %i\tactual: %i\n",
                 i, train_label[i], o);
     }
     printf("\nAccuracy : %g percent\n", (double) p * 100 / (double) sample);
