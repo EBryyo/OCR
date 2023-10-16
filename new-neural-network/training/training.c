@@ -43,14 +43,13 @@ double d_sigmoid(double x)
     return sigmoid(x) * (1 - sigmoid(x));
 }
 
-void gradient_descent(double* input, double* target, Mlp* n)
+void gradient_descent(double* input, double* target, Mlp* n, double*** inertia)
 {
     //updates weights of network using gradient descent
     size_t i, w, h, ww;
-    double sum;
     double** error; 
     double** activation;
-    double cost;
+    double cost, buffer, sum;
 
     //allocate memory for error
     error = calloc(n->count, sizeof(double*));
@@ -107,16 +106,17 @@ void gradient_descent(double* input, double* target, Mlp* n)
 
 
 
-    //apply gradient to weights
+    //apply gradient to weights and update inertia array
     for(i = 0; i < n->count; i++)
     {
         for(w = 0; w < n->layers[i].w; w++)
         {
             for(h = 0; h < n->layers[i].h; h++)
             {    
-                 n->layers[i].weights[w][h] -= 
-                        LEARNING_RATE * error[i][w] * 
-                            ((i) ? activation[i-1][h] : input[h]);
+		 inertia[i][w][h] = -LEARNING_RATE * error[i][w] *
+		     ((i) ? activation[i-1][h] : input[h]) + 
+		     (1 - LEARNING_RATE) * inertia[i][w][h];
+                 n->layers[i].weights[w][h] += inertia[i][w][h];
             }
         }
     }
@@ -141,7 +141,8 @@ void gradient_descent(double* input, double* target, Mlp* n)
     free(activation);
 }
 
-void train(double* input, int target, Mlp* network, size_t len)
+void train(double* input, int target, Mlp* network, 
+	size_t len, double*** inertia)
 {
     //wrapper of gradient descent
     if (len != network->layers[0].h)
@@ -150,9 +151,10 @@ void train(double* input, int target, Mlp* network, size_t len)
         return;
     }
 
-    double* targetarray = target_array(target, network->layers[network->count-1].w);
+    double* targetarray = 
+	target_array(target, network->layers[network->count-1].w);
 
-    gradient_descent(input, targetarray, network);
+    gradient_descent(input, targetarray, network, inertia);
 
     free(targetarray);
 }

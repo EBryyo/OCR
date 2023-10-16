@@ -28,8 +28,20 @@ double testOCR(Mlp* n)
 
 void trainXOR(void)
 {
+    double*** inertia;
     Mlp* n = import_mlp("networks/XOR");
     srand(time(NULL));
+
+    inertia = calloc(n->count, sizeof(double**));
+    for(size_t i = 0; i < n->count; i++)
+    {
+	inertia[i] = calloc(n->layers[i].w, sizeof(double*));
+	for(size_t w = 0; w < n->layers[i].w; w++)
+	{
+	    inertia[i][w] = calloc(n->layers[i].h, sizeof(double));
+	}
+    }
+
     size_t p = 0;
     int o;
     int i, j;
@@ -40,7 +52,7 @@ void trainXOR(void)
         j = (rand() & 1);
         x[0] = (double) i;
         x[1] = (double) j;
-        train(x, i != j, n, 2);
+        train(x, i != j, n, 2, inertia);
     }
     free(x);
     export_mlp("networks/XOR",n);
@@ -51,6 +63,15 @@ void trainOCR(void)
     Mlp* n;
     n = import_mlp("networks/OCR");
     size_t i, count;
+    double*** inertia = calloc(n->count, sizeof(double**));
+    for(i = 0; i < n->count; i++)
+    {
+	inertia[i] = calloc(n->layers[i].w, sizeof(double*));
+	for(size_t w = 0; w < n->layers[i].w; w++)
+	{
+	    inertia[i][w] = calloc(n->layers[i].h, sizeof(double));
+	}
+    }
     count = 60000;
     load_mnist();
     srand(time(NULL));
@@ -60,7 +81,7 @@ void trainOCR(void)
         for(size_t k = 0; k < count; k++)
         {
             i = randfrom(0, 60000);
-            train(train_image[i], train_label[i], n, 28*28);
+            train(train_image[i], train_label[i], n, 28*28, inertia);
         }
     } while (testOCR(n) < 99);
     export_mlp("networks/OCR", n);
