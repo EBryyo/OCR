@@ -23,10 +23,21 @@ void testXOR(void)
         x[0] = (double) i;
         x[1] = (double) j;
         o = compute_output(x, n);
+        printf("test %i: | %g | %g | => %i\t",
+            k, x[0], x[1], o);
         if (o == (i ^ j))
+        {
             p++;
-        printf("test %i: | %g | %g | => %i, should be %i\n",
-            k, x[0], x[1], o, i ^ j);
+            printf("\033[1;32m");
+            printf("CORRECT\n");
+        }
+        else
+        {
+            printf("\033[1;31m");
+            printf("INCORRECT\n");
+        }
+        printf("\033[0m");
+
     }
     printf("\nAccuracy : %i percent\n", p);
     free(x);
@@ -43,10 +54,20 @@ void testOCR(void)
     for(size_t i = 0; i < sample; i++)
     {
         o = compute_output(train_image[i],n);
-        if (o == train_label[i]) 
+        printf("test %i:%s %i -> %i\t\t",
+                i, i < 10 ? "\t\t" : "\t", train_label[i], o);
+        if (o == train_label[i])
+        {
             p++;
-        printf("test %i:\n\texpected: %i\tactual: %i\n",
-                i, train_label[i], o);
+            printf("\033[1;32m");
+            printf("CORRECT\n");
+        }
+        else
+        {
+            printf("\033[1;31m");
+            printf("INCORRECT\n");
+        }
+        printf("\033[0m");
     }
     printf("\nAccuracy : %g percent\n", (double) p * 100 / (double) sample);
     export_mlp("networks/OCR", n);
