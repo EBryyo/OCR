@@ -9,6 +9,13 @@
 #include <signal.h>
 #include <unistd.h>
 
+void swap(size_t x, size_t y, size_t* indexes)
+{
+    size_t buffer = indexes[x];
+    indexes[x] = indexes[y];
+    indexes[y] = buffer;
+}
+
 double testOCR(Mlp* n)
 {
     double res;
@@ -90,12 +97,23 @@ void trainOCR(void)
         pid_t id = fork();
         if (id)
         {
-            n = import_mlp("networks/OCR");
-            for(size_t k = 0; k < count; k++)
+            size_t* indexes = calloc(count, sizeof(size_t));
+            for(i = 0; i < count; i++)
             {
-                i = randfrom(0, 60000);
-                train(train_image[i], train_label[i], n, 28*28, inertia);
+                indexes[i] = i;
             }
+            for(i = 0; i < count; i++)
+            {
+                size_t m = randfrom(0,count);
+                swap(i,m,indexes);
+            }
+
+            n = import_mlp("networks/OCR");
+            for(size_t i = 0; i < count; i++)
+            {
+                train(train_image[indexes[i]], train_label[indexes[i]], n, 28*28, inertia);
+            }
+            free(indexes);
             kill(id, 1);
             printf("\033[1A");
         }
