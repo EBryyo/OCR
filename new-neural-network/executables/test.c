@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
-        printf("invalid argument count\n");
+        printf("usage : ./test [XOR / OCR]\n");
         return 1;
     }
     if (!strcmp(argv[1], "XOR"))
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
             testOCR();
         else
         {
-            printf("invalid test\n");
+            printf("usage : ./test [XOR / OCR]\n");
             return 1;
         }
     }

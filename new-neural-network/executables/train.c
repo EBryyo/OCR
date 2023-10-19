@@ -8,6 +8,7 @@
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <err.h>
 
 void swap(size_t x, size_t y, size_t* indexes)
 {
@@ -36,11 +37,12 @@ double testOCR(Mlp* n)
 
 void trainXOR(void)
 {
-    double*** inertia;
     Mlp* n = import_mlp("networks/XOR");
     srand(time(NULL));
     size_t i, w;
-    inertia = calloc(n->count, sizeof(double**));
+    //inertia is an array that stores the previous changes made to each weight
+    //it is used to add inertia to the gradient descent algorithm
+    double*** inertia = calloc(n->count, sizeof(double**));
     for(i = 0; i < n->count; i++)
     {
 	    inertia[i] = calloc(n->layers[i].w, sizeof(double*));
@@ -62,6 +64,8 @@ void trainXOR(void)
         x[1] = (double) j;
         train(x, l != j, n, 2, inertia);
     }
+
+    //free intertia
     for(i = 0; i < n->count; i++)
     {
         for(size_t w = 0; w < n->layers[i].w; w++)
@@ -80,6 +84,8 @@ void trainOCR(void)
     Mlp* n;
     n = import_mlp("networks/OCR");
     size_t i, count;
+    //inertia is an array that stores the previous changes made to each weight
+    //it is used to add inertia to the gradient descent algorithm
     double*** inertia = calloc(n->count, sizeof(double**));
     for(i = 0; i < n->count; i++)
     {
@@ -95,6 +101,10 @@ void trainOCR(void)
     do {
         export_mlp("networks/OCR", n);
         pid_t id = fork();
+        if (id == -1)
+        {
+            err(1,"fork()");
+        }
         if (id)
         {
             size_t* indexes = calloc(count, sizeof(size_t));
