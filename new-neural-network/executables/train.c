@@ -143,8 +143,7 @@ void trainOCR(void)
                 {}
             }
         }
-    } while (testOCR(n) < 99);
-    export_mlp("networks/OCR", n);
+    } while (testOCR(n) < 99.5);
 
     
     for(i = 0; i < n->count; i++)
@@ -156,6 +155,7 @@ void trainOCR(void)
         free(inertia[i]);
     }
     free(inertia);
+    export_mlp("networks/OCR", n);
 }
 
 int main(int argc, char** argv)
