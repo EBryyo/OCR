@@ -7,6 +7,13 @@
 #include <string.h>
 #include <time.h>
 
+void print_result(int x)
+{
+    if (x)
+        printf("\033[1;32mCORRECT\033[0m\n");
+    else
+        printf("\033[1;31mINCORRECT\033[0m\n");
+}
 
 void testXOR(void)
 {
@@ -15,32 +22,27 @@ void testXOR(void)
     int o;
     int i, j;
     Mlp* n = import_mlp("networks/XOR");
-    double* x = calloc(2, sizeof(double));
-    for(size_t k = 0; k < 100; k++)
-    {
-        i = (rand() & 1);
-        j = (rand() & 1);
-        x[0] = (double) i;
-        x[1] = (double) j;
-        o = compute_output(x, n);
-        printf("test %i: | %g | %g | => %i\t",
-            k, x[0], x[1], o);
-        if (o == (i ^ j))
-        {
-            p++;
-            printf("\033[1;32m");
-            printf("CORRECT\n");
-        }
-        else
-        {
-            printf("\033[1;31m");
-            printf("INCORRECT\n");
-        }
-        printf("\033[0m");
 
-    }
-    printf("\nAccuracy : %i percent\n", p);
-    free(x);
+    double input[2] = {0,0};
+    o = compute_output(input, n);
+    printf("\n\t0 ^ 0 -> %i\t", o);
+    print_result(o == 0);
+    input[0] = 1;
+    o = compute_output(input, n);
+    printf("\t1 ^ 0 -> %i\t", o);
+    print_result(o == 1);
+    input[0] = 0;
+    input[1] = 1;
+    o = compute_output(input, n);
+    printf("\t0 ^ 1 -> %i\t", o);
+    print_result(o == 1);
+    input[0] = 1;
+    o = compute_output(input, n);
+    printf("\t1 ^ 1 -> %i\t", o);
+    print_result(o == 0);
+    printf("\n");
+
+
     export_mlp("networks/XOR",n);
 }
 
