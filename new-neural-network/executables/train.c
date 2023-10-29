@@ -17,6 +17,31 @@ void swap(size_t x, size_t y, size_t* indexes)
     indexes[y] = buffer;
 }
 
+unsigned char testXOR(Mlp* n)
+{
+    srand(time(NULL));
+    unsigned char p = 0;
+    int o;
+    int i, j;
+
+    double input[2] = {0,0};
+    o = compute_output(input, n);
+    if (o == 0) p++;
+    input[0] = 1;
+    o = compute_output(input, n);
+    if (o == 1) p++;
+    input[0] = 0;
+    input[1] = 1;
+    o = compute_output(input, n);
+    if (o == 1) p++;
+    input[0] = 1;
+    o = compute_output(input, n);
+    if (o == 0) p++;
+
+
+    return p;
+}
+
 double testOCR(Mlp* n)
 {
     double res;
@@ -52,19 +77,18 @@ void trainXOR(void)
 	    }
     }
 
-    size_t p = 0;
-    int o;
     int l, j;
     double* x = calloc(2, sizeof(double));
-    for(size_t k = 0; k < 10000; k++)
-    {
-        l = (rand() & 1);
-        j = (rand() & 1);
-        x[0] = (double) l;
-        x[1] = (double) j;
-        train(x, l != j, n, 2, inertia);
-    }
-
+    do {
+        for(size_t k = 0; k < 10000; k++)
+        {
+            l = (rand() & 1);
+            j = (rand() & 1);
+            x[0] = (double) l;
+            x[1] = (double) j;
+            train(x, l != j, n, 2, inertia);
+        }
+    } while (testXOR(n) < 4);
     //free intertia
     for(i = 0; i < n->count; i++)
     {
